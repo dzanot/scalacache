@@ -3,11 +3,10 @@ package sample
 import scalacache._
 import memoization._
 
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
-
 import language.postfixOps
+
+import com.twitter.util.{ Duration, Future }
+import com.twitter.conversions.time._
 
 case class User(id: Int, name: String)
 

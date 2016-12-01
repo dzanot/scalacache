@@ -1,9 +1,9 @@
 package scalacache
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.language.experimental.macros
-import scala.concurrent.duration._
 import scalacache.serialization.Codec
+
+import com.twitter.util.{ Duration, Future }
 
 /**
  * Utilities for memoizing the results of method calls in a cache.
@@ -31,7 +31,7 @@ package object memoization {
    * @tparam A type of the value to be cached
    * @return a Future of the result, either retrieved from the cache or calculated by executing the function `f`
    */
-  def memoize[A, Repr](f: => Future[A])(implicit scalaCache: ScalaCache[Repr], flags: Flags, ec: ExecutionContext, codec: Codec[A, Repr]): Future[A] = macro Macros.memoizeImpl[A, Repr]
+  def memoize[A, Repr](f: => Future[A])(implicit scalaCache: ScalaCache[Repr], flags: Flags, codec: Codec[A, Repr]): Future[A] = macro Macros.memoizeImpl[A, Repr]
 
   /**
    * Perform the given operation and memoize its result to a cache before returning it.
@@ -56,7 +56,7 @@ package object memoization {
    * @tparam A type of the value to be cached
    * @return a Future of the result, either retrieved from the cache or calculated by executing the function `f`
    */
-  def memoize[A, Repr](ttl: Duration)(f: => Future[A])(implicit scalaCache: ScalaCache[Repr], flags: Flags, ec: ExecutionContext, codec: Codec[A, Repr]): Future[A] = macro Macros.memoizeImplWithTTL[A, Repr]
+  def memoize[A, Repr](ttl: Duration)(f: => Future[A])(implicit scalaCache: ScalaCache[Repr], flags: Flags, codec: Codec[A, Repr]): Future[A] = macro Macros.memoizeImplWithTTL[A, Repr]
 
   /**
    * Perform the given operation and memoize its result to a cache before returning it.
@@ -80,7 +80,7 @@ package object memoization {
    * @tparam A type of the value to be cached
    * @return the result, either retrieved from the cache or calculated by executing the function `f`
    */
-  def memoize[A, Repr](optionalTtl: Option[Duration])(f: => Future[A])(implicit scalaCache: ScalaCache[Repr], flags: Flags, ec: ExecutionContext, codec: Codec[A, Repr]): Future[A] = macro Macros.memoizeImplWithOptionalTTL[A, Repr]
+  def memoize[A, Repr](optionalTtl: Option[Duration])(f: => Future[A])(implicit scalaCache: ScalaCache[Repr], flags: Flags, codec: Codec[A, Repr]): Future[A] = macro Macros.memoizeImplWithOptionalTTL[A, Repr]
 
   /**
    * Perform the given operation and memoize its result to a cache before returning it.

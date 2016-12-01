@@ -1,12 +1,12 @@
 package scalacache.memoization
 
 import org.scalatest._
-import org.scalatest.concurrent.{ Eventually, ScalaFutures }
+import org.scalatest.concurrent.{ Eventually, TwitterFutures }
 
 import scalacache.serialization.InMemoryRepr
 import scalacache.{ MockCache, ScalaCache }
 
-trait CacheKeySpecCommon extends Suite with Matchers with ScalaFutures with BeforeAndAfter with Eventually {
+trait CacheKeySpecCommon extends Suite with Matchers with TwitterFutures with BeforeAndAfter with Eventually {
 
   val cache = new MockCache
   implicit def scalaCache: ScalaCache[InMemoryRepr]

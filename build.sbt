@@ -22,6 +22,7 @@ lazy val core = CrossProject(id = "scalacache-core", file("core"), CrossType.Ful
     moduleName := "scalacache-core",
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+      "com.twitter" %% "util-collection" % "6.39.0",
       "org.scalacheck" %% "scalacheck" % "1.13.4" % Test
     ),
     scala211OnlyDeps(

@@ -1,31 +1,31 @@
 package scalacache
 
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.Future
-import scala.concurrent.duration.Duration
 import scalacache.serialization.{ Codec, InMemoryRepr }
 
+import com.twitter.util.{ Duration, Future }
+
 class EmptyCache extends Cache[InMemoryRepr] {
-  override def get[V](key: String)(implicit codec: Codec[V, InMemoryRepr]): Future[Option[V]] = Future.successful(None)
-  override def put[V](key: String, value: V, ttl: Option[Duration])(implicit codec: Codec[V, InMemoryRepr]) = Future.successful((): Unit)
-  override def remove(key: String) = Future.successful((): Unit)
-  override def removeAll() = Future.successful((): Unit)
+  override def get[V](key: String)(implicit codec: Codec[V, InMemoryRepr]): Future[Option[V]] = Future.value(None)
+  override def put[V](key: String, value: V, ttl: Option[Duration])(implicit codec: Codec[V, InMemoryRepr]) = Future.value((): Unit)
+  override def remove(key: String) = Future.value((): Unit)
+  override def removeAll() = Future.value((): Unit)
   override def close(): Unit = {}
 }
 
 class FullCache(value: Any) extends Cache[InMemoryRepr] {
-  override def get[V](key: String)(implicit codec: Codec[V, InMemoryRepr]): Future[Option[V]] = Future.successful(Some(value).asInstanceOf[Option[V]])
-  override def put[V](key: String, value: V, ttl: Option[Duration])(implicit codec: Codec[V, InMemoryRepr]) = Future.successful((): Unit)
-  override def remove(key: String) = Future.successful((): Unit)
-  override def removeAll() = Future.successful((): Unit)
+  override def get[V](key: String)(implicit codec: Codec[V, InMemoryRepr]): Future[Option[V]] = Future.value(Some(value).asInstanceOf[Option[V]])
+  override def put[V](key: String, value: V, ttl: Option[Duration])(implicit codec: Codec[V, InMemoryRepr]) = Future.value((): Unit)
+  override def remove(key: String) = Future.value((): Unit)
+  override def removeAll() = Future.value((): Unit)
   override def close(): Unit = {}
 }
 
 class FailedFutureReturningCache extends Cache[InMemoryRepr] {
-  override def get[V](key: String)(implicit codec: Codec[V, InMemoryRepr]): Future[Option[V]] = Future.failed(new RuntimeException("failed to read"))
-  override def put[V](key: String, value: V, ttl: Option[Duration])(implicit codec: Codec[V, InMemoryRepr]): Future[Unit] = Future.failed(new RuntimeException("failed to write"))
-  override def remove(key: String) = Future.successful((): Unit)
-  override def removeAll() = Future.successful((): Unit)
+  override def get[V](key: String)(implicit codec: Codec[V, InMemoryRepr]): Future[Option[V]] = Future.value(throw new RuntimeException("failed to read"))
+  override def put[V](key: String, value: V, ttl: Option[Duration])(implicit codec: Codec[V, InMemoryRepr]): Future[Unit] = Future.value(throw new RuntimeException("failed to write"))
+  override def remove(key: String) = Future.value((): Unit)
+  override def removeAll() = Future.value((): Unit)
   override def close(): Unit = {}
 }
 
@@ -39,17 +39,17 @@ class MockCache extends Cache[InMemoryRepr] {
 
   def get[V](key: String)(implicit codec: Codec[V, InMemoryRepr]) = {
     val value = mmap.get(key)
-    Future.successful(value.asInstanceOf[Option[V]])
+    Future.value(value.asInstanceOf[Option[V]])
   }
 
   def put[V](key: String, value: V, ttl: Option[Duration])(implicit codec: Codec[V, InMemoryRepr]) =
-    Future.successful(mmap.put(key, value))
+    Future.value(mmap.put(key, value))
 
   def remove(key: String) =
-    Future.successful(mmap.remove(key))
+    Future.value(mmap.remove(key))
 
   def removeAll() =
-    Future.successful(mmap.clear())
+    Future.value(mmap.clear())
 
   def close(): Unit = {}
 

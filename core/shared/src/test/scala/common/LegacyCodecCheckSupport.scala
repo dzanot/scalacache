@@ -1,6 +1,6 @@
 package common
 
-import org.scalatest.concurrent.{ IntegrationPatience, ScalaFutures }
+import org.scalatest.concurrent.{ IntegrationPatience, TwitterFutures }
 import org.scalatest.{ Matchers, FlatSpec }
 
 import scalacache._
@@ -25,7 +25,7 @@ class DummySnackCodec extends Codec[Snack, Array[Byte]] {
   }
 }
 
-trait LegacyCodecCheckSupport { this: FlatSpec with Matchers with ScalaFutures with IntegrationPatience =>
+trait LegacyCodecCheckSupport { this: FlatSpec with Matchers with TwitterFutures with IntegrationPatience =>
 
   /**
    * Given a function that returns a [[Cache]] based on whether or not Codec-based serialisation should be skipped,

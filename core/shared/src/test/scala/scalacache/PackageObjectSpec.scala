@@ -1,15 +1,15 @@
 package scalacache
 
-import org.scalatest.concurrent.{ Eventually, IntegrationPatience, ScalaFutures }
+import org.scalatest.concurrent.{ Eventually, IntegrationPatience, TwitterFutures }
 import org.scalatest.{ BeforeAndAfter, FlatSpec, Matchers }
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 import scala.language.postfixOps
 import scalacache.serialization.{ Codec, InMemoryRepr }
 
-class PackageObjectSpec extends FlatSpec with Matchers with BeforeAndAfter with ScalaFutures with Eventually with IntegrationPatience {
+import com.twitter.util.{ Duration, Future }
+import com.twitter.conversions.time._
+
+class PackageObjectSpec extends FlatSpec with Matchers with BeforeAndAfter with TwitterFutures with Eventually with IntegrationPatience {
 
   val cache = new LoggingMockCache
   implicit val scalaCache = ScalaCache(cache)
@@ -62,7 +62,7 @@ class PackageObjectSpec extends FlatSpec with Matchers with BeforeAndAfter with 
   }
 
   it should "call put with no TTL if the provided TTL is not finite" in {
-    scalacache.put("foo")("bar", Some(Duration.Inf))
+    scalacache.put("foo")("bar", Some(Duration.Top))
     cache.putCalledWithArgs(0) should be(("foo", "bar", None))
   }
 

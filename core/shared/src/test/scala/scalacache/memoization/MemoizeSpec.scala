@@ -1,17 +1,17 @@
 package scalacache.memoization
 
-import org.scalatest.concurrent.{ Eventually, ScalaFutures }
+import org.scalatest.concurrent.{ Eventually, TwitterFutures }
 import org.scalatest.{ FlatSpec, Matchers }
 
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 import scalacache._
 import scalacache.serialization.InMemoryRepr
 
-class MemoizeSpec extends FlatSpec with Matchers with ScalaFutures with Eventually {
+import com.twitter.util.{ Duration, Future }
+import com.twitter.conversions.time._
+
+class MemoizeSpec extends FlatSpec with Matchers with TwitterFutures with Eventually {
 
   behavior of "memoizeSync block"
 

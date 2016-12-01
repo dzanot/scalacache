@@ -1,8 +1,8 @@
 package scalacache
 
-import scala.concurrent.Future
-import scala.concurrent.duration.Duration
 import scalacache.serialization.Codec
+
+import com.twitter.util.{ Duration, Future }
 
 trait Cache[Repr] {
 

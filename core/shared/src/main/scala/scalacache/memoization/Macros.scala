@@ -1,11 +1,11 @@
 package scalacache.memoization
 
-import scala.concurrent.ExecutionContext
 import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
-import scala.concurrent.duration.Duration
 import scalacache.serialization.Codec
 import scalacache.{ Flags, ScalaCache }
+
+import com.twitter.util.Duration
 
 class Macros(val c: blackbox.Context) {
   import c.universe._
@@ -14,21 +14,21 @@ class Macros(val c: blackbox.Context) {
   We get weird macro compilation errors if we write `f: c.Expr[Future[A]]`, so we'll cheat and just make it a `c.Tree`.
   I think this is a macros bug.
    */
-  def memoizeImpl[A: c.WeakTypeTag, Repr: c.WeakTypeTag](f: c.Tree)(scalaCache: c.Expr[ScalaCache[Repr]], flags: c.Expr[Flags], ec: c.Expr[ExecutionContext], codec: c.Expr[Codec[A, Repr]]): Tree = {
+  def memoizeImpl[A: c.WeakTypeTag, Repr: c.WeakTypeTag](f: c.Tree)(scalaCache: c.Expr[ScalaCache[Repr]], flags: c.Expr[Flags], codec: c.Expr[Codec[A, Repr]]): Tree = {
     commonMacroImpl(scalaCache, { keyName =>
-      q"""_root_.scalacache.cachingForMemoize($keyName)(_root_.scala.None)($f)($scalaCache, $flags, $ec, $codec)"""
+      q"""_root_.scalacache.cachingForMemoize($keyName)(_root_.scala.None)($f)($scalaCache, $flags, $codec)"""
     })
   }
 
-  def memoizeImplWithTTL[A: c.WeakTypeTag, Repr: c.WeakTypeTag](ttl: c.Expr[Duration])(f: c.Tree)(scalaCache: c.Expr[ScalaCache[Repr]], flags: c.Expr[Flags], ec: c.Expr[ExecutionContext], codec: c.Expr[Codec[A, Repr]]): Tree = {
+  def memoizeImplWithTTL[A: c.WeakTypeTag, Repr: c.WeakTypeTag](ttl: c.Expr[Duration])(f: c.Tree)(scalaCache: c.Expr[ScalaCache[Repr]], flags: c.Expr[Flags], codec: c.Expr[Codec[A, Repr]]): Tree = {
     commonMacroImpl(scalaCache, { keyName =>
-      q"""_root_.scalacache.cachingForMemoize($keyName)(_root_.scala.Some($ttl))($f)($scalaCache, $flags, $ec, $codec)"""
+      q"""_root_.scalacache.cachingForMemoize($keyName)(_root_.scala.Some($ttl))($f)($scalaCache, $flags, $codec)"""
     })
   }
 
-  def memoizeImplWithOptionalTTL[A: c.WeakTypeTag, Repr: c.WeakTypeTag](optionalTtl: c.Expr[Option[Duration]])(f: c.Tree)(scalaCache: c.Expr[ScalaCache[Repr]], flags: c.Expr[Flags], ec: c.Expr[ExecutionContext], codec: c.Expr[Codec[A, Repr]]): Tree = {
+  def memoizeImplWithOptionalTTL[A: c.WeakTypeTag, Repr: c.WeakTypeTag](optionalTtl: c.Expr[Option[Duration]])(f: c.Tree)(scalaCache: c.Expr[ScalaCache[Repr]], flags: c.Expr[Flags], codec: c.Expr[Codec[A, Repr]]): Tree = {
     commonMacroImpl(scalaCache, { keyName =>
-      q"""_root_.scalacache.cachingForMemoize($keyName)($optionalTtl)($f)($scalaCache, $flags, $ec, $codec)"""
+      q"""_root_.scalacache.cachingForMemoize($keyName)($optionalTtl)($f)($scalaCache, $flags, $codec)"""
     })
   }
 
